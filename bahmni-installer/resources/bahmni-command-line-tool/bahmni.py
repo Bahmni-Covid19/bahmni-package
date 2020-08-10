@@ -65,8 +65,8 @@ def addExtraVarFile(ctx, file_path):
     if(os.path.isfile(file_path)):
       ctx.obj['EXTRA_VARS']  = ctx.obj['EXTRA_VARS'] + " --extra-vars '@"+file_path+"'"
 
-def addExtraVar(ctx, var_name, var_value): 
-    if var_value:     
+def addExtraVar(ctx, var_name, var_value):
+    if var_value:
       ctx.obj['EXTRA_VARS']  = ctx.obj['EXTRA_VARS'] + " --extra-vars '{0}={1}'".format(var_name, var_value)
 
 def getInventoryFileName():
@@ -160,6 +160,13 @@ def install_nagios(ctx):
     click.echo(command)
     return subprocess.check_call(command, shell=True)
 
+@cli.command(name="install-covid-19-starter", short_help="Installs the COVID-19 starter form and programs.")
+@click.pass_context
+def install_covid_19_starter(ctx):
+    command = ctx.obj['ANSIBLE_COMMAND'].format("install-covid-19-starter.yml", ctx.obj['EXTRA_VARS'])
+    click.echo(command)
+    return subprocess.check_call(command, shell=True)
+
 @cli.command(name="version", short_help="Print the Bahmni installer version")
 @click.pass_context
 def installer_version(ctx):
@@ -219,7 +226,7 @@ def main_backup(ctx,backup_type,options,strategy,schedule):
       if 'postgres' in options or 'openerp' in options or 'clinlims' in options or options == 'bahmni_pacs' or options == 'pacsdb' or options == 'all':
           command = ctx.obj['ANSIBLE_COMMAND'].format("incr-postgresdbbackup.yml", ctx.obj['EXTRA_VARS'])
           subprocess.call(command, shell=True)
-      
+
    if backup_type == 'file' or backup_type == 'all' :
       if options in artifacts or options == 'all':
           command = ctx.obj['ANSIBLE_COMMAND'].format("backup-artifacts.yml", ctx.obj['EXTRA_VARS'])
@@ -246,7 +253,7 @@ def restore(ctx,restore_type,options,strategy,restore_point):
          command = ctx.obj['ANSIBLE_COMMAND'].format("incr-mysqldbrestore.yml", ctx.obj['EXTRA_VARS'])
          subprocess.call(command, shell=True)
       elif 'bahmni_reports' in options :
-         addExtraVar(ctx,"db", "bahmni_reports" )         
+         addExtraVar(ctx,"db", "bahmni_reports" )
          command = ctx.obj['ANSIBLE_COMMAND'].format("incr-mysqldbrestore.yml", ctx.obj['EXTRA_VARS'])
          subprocess.call(command, shell=True)
       elif options == 'postgres' :
