@@ -161,6 +161,13 @@ def install_nagios(ctx):
     click.echo(command)
     return subprocess.check_call(command, shell=True)
 
+@cli.command(name="install-covid-19-starter", short_help="Installs the COVID-19 starter form and programs.")
+@click.pass_context
+def install_covid_19_starter(ctx):
+    command = ctx.obj['ANSIBLE_COMMAND'].format("install-covid-19-starter.yml", ctx.obj['EXTRA_VARS'])
+    click.echo(command)
+    return subprocess.check_call(command, shell=True)
+
 @cli.command(name="version", short_help="Print the Bahmni installer version")
 @click.pass_context
 def installer_version(ctx):
